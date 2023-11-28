@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import { Database } from "../lib/type";
-import { listings } from "../mocks/listing";
+import { Database } from "../../../lib/type";
+import { listings } from "../../../mocks/listing";
 
-export const resolvers = {
+export const listingsResolvers = {
   Query: {
     listings: async (_root: undefined, _args: {}, { db }: { db: Database }) => {
       return await db.listings.find({}).toArray();
