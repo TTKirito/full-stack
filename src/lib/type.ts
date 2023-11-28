@@ -9,6 +9,7 @@ export interface Listing {
   numOfGuests: number;
   numOfBeds: number;
   rating: number;
+  numOfBaths: number;
 }
 
 export interface Database {
