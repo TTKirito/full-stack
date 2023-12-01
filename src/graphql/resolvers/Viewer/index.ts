@@ -64,7 +64,7 @@ const loginViaGoogle = async (
     viewer = await db.users.findOne({ _id: inserResult.insertedId });
   }
 
-  return viewer;
+  return viewer
 };
 
 export const viewerResolvers = {
@@ -102,7 +102,7 @@ export const viewerResolvers = {
         throw new Error(`Failed to query Google Auth Url: ${error}`);
       }
     },
-    LogOut: (): Viewer => {
+    logOut: (): Viewer => {
       try {
         return { didRequest: true };
       } catch (error) {
