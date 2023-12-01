@@ -31,7 +31,7 @@ const seed = async () => {
 
     const users: User[] = [
       {
-        _id: new ObjectId("5d378db94e84753160e08b55"),
+        _id: "5d378db94e84753160e08b55",
         token: "token_*************",
         name: "Thuan",
         avatar:
