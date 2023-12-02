@@ -4,18 +4,12 @@ import { LogInArgs } from "./types";
 import crypto from "crypto";
 import { Request, Response } from "express";
 
-const cookieOptions = {
-  httpOnly: true,
-  sameSite: true,
-  signed: true,
-  secure: process.env.NODE_ENV === "development" ? false : true,
-};
 
 const loginViaGoogle = async (
   code: string,
   token: string,
   db: Database,
-  res: Response
+  req: Request
 ): Promise<User | undefined | null> => {
   const { user } = await Google.login(code);
 
@@ -73,10 +67,9 @@ const loginViaGoogle = async (
     viewer = await db.users.findOne({ _id: inserResult.insertedId });
   }
 
-  res.cookie("viewer", userId, {
-    ...cookieOptions,
-    maxAge: 365 * 24 * 60 * 60 * 1000,
-  });
+  req.session = {
+    viewer: userId
+  }
 
   return viewer;
 };
@@ -88,7 +81,7 @@ const logInViaCookie = async (
   res: Response
 ): Promise<User | undefined | null> => {
   const updateRes = await db.users.findOneAndUpdate(
-    { _id: req.signedCookies.viewer },
+    { _id: req.session?.viewer },
     { $set: { token } },
     { returnDocument: "after" }
   );
@@ -96,7 +89,7 @@ const logInViaCookie = async (
   let viewer = updateRes && updateRes;
 
   if (!viewer) {
-    res.clearCookie("viewer", cookieOptions);
+    req.session = null
   }
 
   return viewer;
@@ -122,7 +115,7 @@ export const viewerResolvers = {
         const code = input ? input.code : null;
         const token = crypto.randomBytes(16).toString("hex");
         const viewer = code
-          ? await loginViaGoogle(code, token, db, res)
+          ? await loginViaGoogle(code, token, db, req)
           : await logInViaCookie(token, db, req, res);
         if (!viewer) {
           return { didRequest: true };
@@ -142,10 +135,10 @@ export const viewerResolvers = {
     logOut: (
       _root: undefined,
       _args: {},
-      { res }: { res: Response }
+      { req }: { req: Request }
     ): Viewer => {
       try {
-        res.clearCookie("viewer", cookieOptions);
+        req.session = null
         return { didRequest: true };
       } catch (error) {
         throw new Error(`Failed to log out: ${error}`);
