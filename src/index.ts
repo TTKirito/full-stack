@@ -4,16 +4,17 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { typeDefs, resolvers } from "./graphql";
 import { connectDatabase } from "./database";
-
+import cookieParser from "cookie-parser";
 const app = express();
 const port = process.env.PORT;
 
 const initApollo = async (app: any) => {
   const db = await connectDatabase();
+  app.use(cookieParser(process.env.SECRET));
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: () => ({ db }),
+    context: ({ req, res }) => ({ db, req, res }),
   });
   await server.start();
   //npm dedup

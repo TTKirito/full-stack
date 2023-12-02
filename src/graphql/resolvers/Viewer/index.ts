@@ -2,11 +2,20 @@ import { Google } from "../../../lib/api/Google";
 import { Database, User, Viewer } from "../../../lib/type";
 import { LogInArgs } from "./types";
 import crypto from "crypto";
+import { Request, Response } from "express";
+
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: true,
+  signed: true,
+  secure: process.env.NODE_ENV === "development" ? false : true,
+};
 
 const loginViaGoogle = async (
   code: string,
   token: string,
-  db: Database
+  db: Database,
+  res: Response
 ): Promise<User | undefined | null> => {
   const { user } = await Google.login(code);
 
@@ -64,7 +73,33 @@ const loginViaGoogle = async (
     viewer = await db.users.findOne({ _id: inserResult.insertedId });
   }
 
-  return viewer
+  res.cookie("viewer", userId, {
+    ...cookieOptions,
+    maxAge: 365 * 24 * 60 * 60 * 1000,
+  });
+
+  return viewer;
+};
+
+const logInViaCookie = async (
+  token: string,
+  db: Database,
+  req: Request,
+  res: Response
+): Promise<User | undefined | null> => {
+  const updateRes = await db.users.findOneAndUpdate(
+    { _id: req.signedCookies.viewer },
+    { $set: { token } },
+    { returnDocument: "after" }
+  );
+
+  let viewer = updateRes && updateRes;
+
+  if (!viewer) {
+    res.clearCookie("viewer", cookieOptions);
+  }
+
+  return viewer;
 };
 
 export const viewerResolvers = {
@@ -81,12 +116,14 @@ export const viewerResolvers = {
     logIn: async (
       _root: undefined,
       { input }: LogInArgs,
-      { db }: { db: Database }
+      { db, req, res }: { db: Database; req: Request; res: Response }
     ) => {
       try {
         const code = input ? input.code : null;
         const token = crypto.randomBytes(16).toString("hex");
-        const viewer = code ? await loginViaGoogle(code, token, db) : undefined;
+        const viewer = code
+          ? await loginViaGoogle(code, token, db, res)
+          : await logInViaCookie(token, db, req, res);
         if (!viewer) {
           return { didRequest: true };
         }
@@ -102,8 +139,13 @@ export const viewerResolvers = {
         throw new Error(`Failed to query Google Auth Url: ${error}`);
       }
     },
-    logOut: (): Viewer => {
+    logOut: (
+      _root: undefined,
+      _args: {},
+      { res }: { res: Response }
+    ): Viewer => {
       try {
+        res.clearCookie("viewer", cookieOptions);
         return { didRequest: true };
       } catch (error) {
         throw new Error(`Failed to log out: ${error}`);
