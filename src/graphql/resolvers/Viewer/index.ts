@@ -23,7 +23,7 @@ const loginViaGoogle = async (
   const userName = userNamesList ? userNamesList[0].displayName : null;
   const userId =
     userNamesList && userNamesList[0].metadata?.source
-      ? String(userNamesList[0].metadata.source)
+      ? userNamesList[0].metadata.source.id
       : null;
   const userAvatar =
     userPhotsList && userPhotsList[0].url ? userPhotsList[0].url : null;
@@ -50,7 +50,7 @@ const loginViaGoogle = async (
 
   if (!viewer) {
     const inserResult = await db.users.insertOne({
-      _id: userId,
+      _id: String(userId),
       token,
       name: userName,
       avatar: userAvatar,
