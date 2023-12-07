@@ -1,0 +1,28 @@
+import { ObjectId } from "mongodb";
+import { Database } from "../lib/type";
+import { listings } from "../mocks/listing";
+
+export const resolvers = {
+  Query: {
+    listings: async (_root: undefined, _args: {}, { db }: { db: Database }) => {
+      return await db.listings.find({}).toArray();
+    },
+  },
+  Mutation: {
+    deleteListing: async (
+      _root: undefined,
+      { id }: { id: string },
+      { db }: { db: Database }
+    ) => {
+      const deleteRes: any = await db.listings.findOneAndDelete({
+        _id: new ObjectId(id),
+      });
+
+      if (!deleteRes) {
+        throw new Error("failed to delete listing");
+      }
+
+      return deleteRes;
+    },
+  },
+};
