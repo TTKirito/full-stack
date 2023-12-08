@@ -1,5 +1,5 @@
 import { gql } from "apollo-server-express";
-
+//define type thi phai resolver
 export const typeDefs = gql`
   type Booking {
     id: ID!
