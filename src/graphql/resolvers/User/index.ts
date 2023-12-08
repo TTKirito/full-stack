@@ -78,9 +78,6 @@ export const userResolvers = {
       { db }: { db: Database }
     ): Promise<UserListingsData | null> => {
       try {
-        if (!user.authorized) {
-          return null;
-        }
         const data: UserListingsData = {
           total: 0,
           result: [],
@@ -92,7 +89,7 @@ export const userResolvers = {
 
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
         cursor = cursor.limit(limit);
-        data.total = await cursor.count();
+        data.total = await cursor.count() || 0;
         data.result = await cursor.toArray();
 
         return data;

@@ -16,7 +16,7 @@ const seed = async () => {
         description: "Clean and fully furnished apartment",
         image:
           "https://media.macphun.com/img/uploads/customer/how-to/608/15542038745ca344e267fb80.28757312.jpg?q=85&w=1340",
-        host: "5d378db94e84753160e08b57",
+        host: "114186990765449545089",
         type: ListingType.Apartment,
         address: "170 Nguyen chi thanh, hai chau, da nang, viet nam",
         country: "Viet Nam",
@@ -40,7 +40,7 @@ const seed = async () => {
         walletId: "acct_**********",
         income: 723796,
         bokings: [],
-        listing: [new ObjectId("5d378db94e84753160e08b31")],
+        listings: [new ObjectId("114186990765449545089")],
       },
     ];
 
