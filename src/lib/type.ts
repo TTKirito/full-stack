@@ -71,7 +71,8 @@ export interface User {
   walletId: string;
   income: number;
   bokings: ObjectId[];
-  listing: ObjectId[];
+  listings: ObjectId[];
+  authorized?: boolean;
 }
 
 export interface Database {

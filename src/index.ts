@@ -5,7 +5,7 @@ import { ApolloServer } from "apollo-server-express";
 import { typeDefs, resolvers } from "./graphql";
 import { connectDatabase } from "./database";
 import cookieSession from "cookie-session";
-import cors from 'cors'
+import cors from "cors";
 const app = express();
 const port = process.env.PORT;
 
@@ -24,7 +24,16 @@ const initApollo = async (app: any) => {
     context: ({ req, res }) => ({ db, req, res }),
   });
   await server.start();
-  app.use(cors({ origin: ["http://localhost:3000"], credentials: true }))
+  app.use(
+    cors({
+      origin: [
+        "http://localhost:3000",
+        "https://studio.apollographql.com",
+        "https://www.graphql-code-generator.com",
+      ],
+      credentials: true,
+    })
+  );
   //npm dedup
   server.applyMiddleware({ app, path: "/api", cors: false });
   app.listen(port);
