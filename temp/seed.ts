@@ -30,18 +30,18 @@ const seed = async () => {
     ];
 
     const users: User[] = [
-      {
-        _id: "5d378db94e84753160e08b55",
-        token: "token_*************",
-        name: "Thuan",
-        avatar:
-          "https://media.macphun.com/img/uploads/customer/how-to/608/15542038745ca344e267fb80.28757312.jpg?q=85&w=1340",
-        contact: "thuanton98@gmail.com",
-        walletId: "acct_**********",
-        income: 723796,
-        bokings: [],
-        listings: [],
-      },
+      // {
+      //   _id: "5d378db94e84753160e08b55",
+      //   token: "token_*************",
+      //   name: "Thuan",
+      //   avatar:
+      //     "https://media.macphun.com/img/uploads/customer/how-to/608/15542038745ca344e267fb80.28757312.jpg?q=85&w=1340",
+      //   contact: "thuanton98@gmail.com",
+      //   walletId: "acct_**********",
+      //   income: 723796,
+      //   bokings: [],
+      //   listings: [],
+      // },
     ];
 
     for (const listing of listings) {
