@@ -40,7 +40,7 @@ const seed = async () => {
         walletId: "acct_**********",
         income: 723796,
         bokings: [],
-        listings: [new ObjectId("114186990765449545089")],
+        listings: [],
       },
     ];
 
