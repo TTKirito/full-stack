@@ -47,7 +47,7 @@ export const listingResolvers = {
 
       return host;
     },
-    bookingIndex: (listing: Listing): string => {
+    bookingsIndex: (listing: Listing): string => {
       return JSON.stringify(listing.bookingsIndex) || JSON.stringify({});
     },
     bookings: async (
