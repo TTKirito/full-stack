@@ -62,7 +62,7 @@ export const userResolvers = {
           _id: { $in: user.bokings },
         });
 
-        let total = await db.listings.countDocuments({
+        let total = await db.bookings.countDocuments({
           _id: { $in: user.listings },
         });
 
