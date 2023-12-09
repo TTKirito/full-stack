@@ -62,9 +62,13 @@ export const userResolvers = {
           _id: { $in: user.bokings },
         });
 
+        let total = await db.listings.countDocuments({
+          _id: { $in: user.listings },
+        });
+
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
         cursor = cursor.limit(limit);
-        data.total = await cursor.count();
+        data.total = total;
         data.result = await cursor.toArray();
 
         return data;
@@ -87,9 +91,13 @@ export const userResolvers = {
           _id: { $in: user.listings },
         });
 
+        let total = await db.listings.countDocuments({
+          _id: { $in: user.listings },
+        });
+
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
         cursor = cursor.limit(limit);
-        data.total = await cursor.count() || 0;
+        data.total = total || 0;
         data.result = await cursor.toArray();
 
         return data;

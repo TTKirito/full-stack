@@ -27,6 +27,91 @@ const seed = async () => {
         price: 1234,
         numOfGuests: 3,
       },
+      {
+        _id: new ObjectId(),
+        title: "cooper",
+        description: "Clean and fully furnished apartment",
+        image:
+          "https://media.macphun.com/img/uploads/customer/how-to/608/15542038745ca344e267fb80.28757312.jpg?q=85&w=1340",
+        host: "114186990765449545089",
+        type: ListingType.Apartment,
+        address: "170 Nguyen chi thanh, hai chau, da nang, viet nam",
+        country: "Viet Nam",
+        admin: "Cooper",
+        city: "Da Nang",
+        bookings: [],
+        bokingsIndex: {},
+        price: 1234,
+        numOfGuests: 3,
+      },
+      {
+        _id: new ObjectId(),
+        title: "cooper",
+        description: "Clean and fully furnished apartment",
+        image:
+          "https://media.macphun.com/img/uploads/customer/how-to/608/15542038745ca344e267fb80.28757312.jpg?q=85&w=1340",
+        host: "114186990765449545089",
+        type: ListingType.Apartment,
+        address: "170 Nguyen chi thanh, hai chau, da nang, viet nam",
+        country: "Viet Nam",
+        admin: "Cooper",
+        city: "Da Nang",
+        bookings: [],
+        bokingsIndex: {},
+        price: 1234,
+        numOfGuests: 3,
+      },
+      {
+        _id: new ObjectId(),
+        title: "cooper",
+        description: "Clean and fully furnished apartment",
+        image:
+          "https://media.macphun.com/img/uploads/customer/how-to/608/15542038745ca344e267fb80.28757312.jpg?q=85&w=1340",
+        host: "114186990765449545089",
+        type: ListingType.Apartment,
+        address: "170 Nguyen chi thanh, hai chau, da nang, viet nam",
+        country: "Viet Nam",
+        admin: "Cooper",
+        city: "Da Nang",
+        bookings: [],
+        bokingsIndex: {},
+        price: 1234,
+        numOfGuests: 3,
+      },
+      {
+        _id: new ObjectId(),
+        title: "cooper",
+        description: "Clean and fully furnished apartment",
+        image:
+          "https://media.macphun.com/img/uploads/customer/how-to/608/15542038745ca344e267fb80.28757312.jpg?q=85&w=1340",
+        host: "114186990765449545089",
+        type: ListingType.Apartment,
+        address: "170 Nguyen chi thanh, hai chau, da nang, viet nam",
+        country: "Viet Nam",
+        admin: "Cooper",
+        city: "Da Nang",
+        bookings: [],
+        bokingsIndex: {},
+        price: 1234,
+        numOfGuests: 3,
+      },
+      {
+        _id: new ObjectId(),
+        title: "cooper",
+        description: "Clean and fully furnished apartment",
+        image:
+          "https://media.macphun.com/img/uploads/customer/how-to/608/15542038745ca344e267fb80.28757312.jpg?q=85&w=1340",
+        host: "114186990765449545089",
+        type: ListingType.Apartment,
+        address: "170 Nguyen chi thanh, hai chau, da nang, viet nam",
+        country: "Viet Nam",
+        admin: "Cooper",
+        city: "Da Nang",
+        bookings: [],
+        bokingsIndex: {},
+        price: 1234,
+        numOfGuests: 3,
+      },
     ];
 
     const users: User[] = [
@@ -45,7 +130,8 @@ const seed = async () => {
     ];
 
     for (const listing of listings) {
-      await db.listings.insertOne(listing);
+      const sss = await db.listings.insertOne(listing);
+      console.log(sss.insertedId)
     }
     for (const user of users) {
       await db.users.insertOne(user);
