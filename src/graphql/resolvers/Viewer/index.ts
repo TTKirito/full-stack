@@ -4,7 +4,6 @@ import { LogInArgs } from "./types";
 import crypto from "crypto";
 import { Request, Response } from "express";
 
-
 const loginViaGoogle = async (
   code: string,
   token: string,
@@ -68,8 +67,8 @@ const loginViaGoogle = async (
   }
 
   req.session = {
-    viewer: userId
-  }
+    viewer: userId,
+  };
 
   return viewer;
 };
@@ -89,7 +88,7 @@ const logInViaCookie = async (
   let viewer = updateRes && updateRes;
 
   if (!viewer) {
-    req.session = null
+    req.session = null;
   }
 
   return viewer;
@@ -138,11 +137,17 @@ export const viewerResolvers = {
       { req }: { req: Request }
     ): Viewer => {
       try {
-        req.session = null
+        req.session = null;
         return { didRequest: true };
       } catch (error) {
         throw new Error(`Failed to log out: ${error}`);
       }
+    },
+    connectStripe: (): Viewer => {
+      return { didRequest: true };
+    },
+    disconnectStripe: (): Viewer => {
+      return { didRequest: true };
     },
   },
   Viewer: {
