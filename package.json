@@ -23,7 +23,8 @@
     "googleapis": "^129.0.0",
     "lodash": "^4.17.21",
     "mongodb": "^6.3.0",
-    "mongoose": "^8.0.1"
+    "mongoose": "^8.0.1",
+    "stripe": "^14.8.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.6",
