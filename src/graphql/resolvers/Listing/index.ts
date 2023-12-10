@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { ObjectId } from "mongodb";
+import { Axios } from "../../../lib/api";
 import { Database, Listing, User } from "../../../lib/type";
 import { authorize } from "../../../lib/utils";
 import {
@@ -9,6 +10,7 @@ import {
   ListingsArgs,
   ListingsData,
   ListingsFilter,
+  ListingsQuery,
 } from "./types";
 
 export const listingResolvers = {
@@ -38,16 +40,38 @@ export const listingResolvers = {
     },
     listings: async (
       _root: undefined,
-      { filter, limit, page }: ListingsArgs,
+      { location, filter, limit, page }: ListingsArgs,
       { db }: { db: Database }
     ): Promise<ListingsData> => {
       try {
+        const query: ListingsQuery = {};
         const data: ListingsData = {
+          region: null,
           total: 0,
           result: [],
         };
 
-        let cursor = await db.listings.find({});
+        if (location) {
+          const response = await Axios.get({
+            url: `${process.env.NINJA_API}?city=${location}` as string,
+            headers: { "X-Api-Key": `${process.env.NINJA_API_KEY}` },
+          });
+          const country = response && response.length && response[0].country;
+          const city = response && response.length && response[0].name;
+          const admin = response && response.length && response[0].state;
+
+          if (city) query.city = city;
+          if (admin) query.admin = admin;
+          if (country) {
+            query.country = country;
+          }
+
+          const cityText = city ? `${city}, ` : "";
+          const adminText = admin ? `${admin}, ` : "";
+          data.region = `${cityText}${adminText}${country}`;
+        }
+
+        let cursor = await db.listings.find(query);
 
         if (filter && filter === ListingsFilter.PRICE_LOW_TO_HIGH) {
           cursor = cursor.sort({ price: 1 });
@@ -57,8 +81,7 @@ export const listingResolvers = {
           cursor = cursor.sort({ price: -1 });
         }
 
-        let total = await db.listings.countDocuments();
-
+        let total = await db.listings.countDocuments(query);
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);
         cursor = cursor.limit(limit);
         data.total = total || 0;
