@@ -64,6 +64,8 @@ export const listingResolvers = {
           if (admin) query.admin = admin;
           if (country) {
             query.country = country;
+          } else {
+            throw new Error("no country found");
           }
 
           const cityText = city ? `${city}, ` : "";
