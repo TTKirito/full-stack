@@ -1,9 +1,11 @@
 import { Request } from "express";
 import { ObjectId } from "mongodb";
 import { Axios } from "../../../lib/api";
-import { Database, Listing, User } from "../../../lib/type";
+import { Database, Listing, ListingType, User } from "../../../lib/type";
 import { authorize } from "../../../lib/utils";
 import {
+  HostListingArgs,
+  HostListingInput,
   ListingArgs,
   ListingBookingsArgs,
   ListingBookingsData,
@@ -12,6 +14,29 @@ import {
   ListingsFilter,
   ListingsQuery,
 } from "./types";
+
+const verifyHostListingInput = ({
+  title,
+  description,
+  type,
+  price,
+}: HostListingInput) => {
+  if (title.length > 100) {
+    throw new Error("listing title must be under 100 characters");
+  }
+
+  if (description.length > 5000) {
+    throw new Error("listing type must be either an apartment or house");
+  }
+
+  if (type !== ListingType.Apartment && type !== ListingType.House) {
+    throw new Error("listing type must be either an apartment or house");
+  }
+
+  if (price < 0) {
+    throw new Error("price must be greater than 0");
+  }
+};
 
 export const listingResolvers = {
   Query: {
@@ -96,9 +121,51 @@ export const listingResolvers = {
     },
   },
   Mutation: {
-    hostListing: () => {
-      return 'Mutation.listing'
-    }
+    hostListing: async (
+      _root: undefined,
+      { input }: HostListingArgs,
+      { db, req }: { db: Database; req: Request }
+    ): Promise<Listing> => {
+      verifyHostListingInput(input);
+
+      let viewer = await authorize(db, req);
+      if (!viewer) {
+        throw new Error("viewer cannot be found");
+      }
+
+      const response = await Axios.get({
+        url: `${process.env.NINJA_API}?city=${input.address}` as string,
+        headers: { "X-Api-Key": `${process.env.NINJA_API_KEY}` },
+      });
+      const country = response && response.length && response[0].country;
+      const city = response && response.length && response[0].name;
+      const admin = response && response.length && response[0].state;
+
+      if (!country || !admin || !city) {
+        throw new Error("invalid address input");
+      }
+
+      const inserResult = await db.listings.insertOne({
+        _id: new ObjectId(),
+        ...input,
+        bookings: [],
+        bookingsIndex: {},
+        country,
+        admin,
+        city,
+        host: viewer._id,
+      });
+
+      const insertedListing = await db.listings.findOne({
+        _id: inserResult.insertedId,
+      });
+
+      if (!insertedListing) {
+        throw new Error("Failed to create listing");
+      }
+
+      return insertedListing;
+    },
   },
   Listing: {
     id: (listing: Listing): string => {
