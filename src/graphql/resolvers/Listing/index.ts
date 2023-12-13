@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { ObjectId } from "mongodb";
 import { Axios } from "../../../lib/api";
+import { Cloudinary } from "../../../lib/api/Cloudinary";
 import { Database, Listing, ListingType, User } from "../../../lib/type";
 import { authorize } from "../../../lib/utils";
 import {
@@ -148,9 +149,12 @@ export const listingResolvers = {
         throw new Error("invalid address input");
       }
 
+      const imageUrl = await Cloudinary.upload(input.image);
+
       const inserResult = await db.listings.insertOne({
         _id: new ObjectId(),
         ...input,
+        image: imageUrl,
         bookings: [],
         bookingsIndex: {},
         country,
