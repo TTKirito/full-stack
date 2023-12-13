@@ -137,9 +137,12 @@ export const listingResolvers = {
         url: `${process.env.NINJA_API}?city=${input.address}` as string,
         headers: { "X-Api-Key": `${process.env.NINJA_API_KEY}` },
       });
+
       const country = response && response.length && response[0].country;
       const city = response && response.length && response[0].name;
-      const admin = response && response.length && response[0].state;
+      const admin =
+        (response && response.length && response[0].state) ||
+        (response && response.length && response[0].country);
 
       if (!country || !admin || !city) {
         throw new Error("invalid address input");
@@ -163,6 +166,10 @@ export const listingResolvers = {
       if (!insertedListing) {
         throw new Error("Failed to create listing");
       }
+      await db.users.updateOne(
+        { _id: viewer._id },
+        { $push: { listings: insertedListing._id } }
+      );
 
       return insertedListing;
     },

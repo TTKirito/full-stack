@@ -6,6 +6,8 @@ import { typeDefs, resolvers } from "./graphql";
 import { connectDatabase } from "./database";
 import cookieSession from "cookie-session";
 import cors from "cors";
+import bodyParser from "body-parser";
+
 const app = express();
 const port = process.env.PORT;
 
@@ -18,6 +20,7 @@ const initApollo = async (app: any) => {
   const db = await connectDatabase();
   app.set("trust proxy", true);
   app.use(cookieSession(cookieOptions));
+  app.use(bodyParser.json({ limit: "2mb" }));
   const server = new ApolloServer({
     typeDefs,
     resolvers,
