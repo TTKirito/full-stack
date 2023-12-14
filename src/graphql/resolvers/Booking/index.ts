@@ -149,7 +149,7 @@ export const bookingResolvers = {
             _id: viewer._id,
           },
           {
-            $push: { bokings: insertedBooking?._id },
+            $push: { bookings: insertedBooking?._id },
           }
         );
 
@@ -161,7 +161,7 @@ export const bookingResolvers = {
           },
           {
             $set: { bookingsIndex },
-            $push: { bokings: insertedBooking?._id },
+            $push: { bookings: insertedBooking?._id },
           }
         );
 

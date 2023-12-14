@@ -71,7 +71,7 @@ export interface User {
   contact: string;
   walletId: string;
   income: number;
-  bokings: ObjectId[];
+  bookings: ObjectId[];
   listings: ObjectId[];
   authorized?: boolean;
 }

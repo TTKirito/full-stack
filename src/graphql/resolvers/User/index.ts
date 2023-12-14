@@ -59,11 +59,11 @@ export const userResolvers = {
         };
 
         let cursor = await db.bookings.find({
-          _id: { $in: user.bokings },
+          _id: { $in: user.bookings },
         });
 
         let total = await db.bookings.countDocuments({
-          _id: { $in: user.listings },
+          _id: { $in: user.bookings },
         });
 
         cursor = cursor.skip(page > 0 ? (page - 1) * limit : 0);

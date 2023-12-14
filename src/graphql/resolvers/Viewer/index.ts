@@ -60,7 +60,7 @@ const loginViaGoogle = async (
       avatar: userAvatar,
       contact: userEmail,
       income: 0,
-      bokings: [],
+      bookings: [],
       listings: [],
       walletId: "",
     });
