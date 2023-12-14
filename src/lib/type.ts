@@ -29,12 +29,12 @@ export interface BookingsIndexMonth {
   [key: string]: boolean;
 }
 
-export interface BookingIndexYear {
+export interface BookingsIndexYear {
   [key: string]: BookingsIndexMonth;
 }
 
-export interface BookingIndex {
-  [key: string]: BookingIndexYear;
+export interface BookingsIndex {
+  [key: string]: BookingsIndexYear;
 }
 
 export interface Booking {
@@ -57,9 +57,10 @@ export interface Listing {
   admin: string;
   city: string;
   bookings: ObjectId[];
-  bokingsIndex: BookingIndex;
+  bookingsIndex: BookingsIndex;
   price: number;
   numOfGuests: number;
+  authorized?: boolean;
 }
 
 export interface User {
@@ -70,8 +71,9 @@ export interface User {
   contact: string;
   walletId: string;
   income: number;
-  bokings: ObjectId[];
-  listing: ObjectId[];
+  bookings: ObjectId[];
+  listings: ObjectId[];
+  authorized?: boolean;
 }
 
 export interface Database {
