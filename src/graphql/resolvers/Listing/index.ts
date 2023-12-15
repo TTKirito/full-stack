@@ -79,7 +79,7 @@ export const listingResolvers = {
 
         if (location) {
           const response = await Axios.get({
-            url: `${process.env.NINJA_API}?city=${location}` as string,
+            url: `${process.env.NINJA_API}?city=${encodeURIComponent(location)}` as string,
             headers: { "X-Api-Key": `${process.env.NINJA_API_KEY}` },
           });
           const country = response && response.length && response[0].country;
